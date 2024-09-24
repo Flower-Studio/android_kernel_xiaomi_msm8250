@@ -5360,6 +5360,14 @@ L:	linux-edac@vger.kernel.org
 S:	Maintained
 F:	drivers/edac/ti_edac.c
 
+EDAC-QCOM
+M:	Channagoud Kadabi <ckadabi@codeaurora.org>
+M:	Venkata Narendra Kumar Gutta <vnkgutta@codeaurora.org>
+L:	linux-arm-msm@vger.kernel.org
+L:	linux-edac@vger.kernel.org
+S:	Maintained
+F:	drivers/edac/qcom_edac.c
+
 EDIROL UA-101/UA-1000 DRIVER
 M:	Clemens Ladisch <clemens@ladisch.de>
 L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
@@ -5999,7 +6007,6 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tytso/fscrypt.git
 S:	Supported
 F:	fs/crypto/
 F:	include/linux/fscrypt*.h
-F:	include/uapi/linux/fscrypt.h
 F:	Documentation/filesystems/fscrypt.rst
 
 FSI-ATTACHED I2C DRIVER
@@ -6017,18 +6024,6 @@ L:	linux-fsdevel@vger.kernel.org
 S:	Maintained
 F:	fs/notify/
 F:	include/linux/fsnotify*.h
-
-FSVERITY: READ-ONLY FILE-BASED AUTHENTICITY PROTECTION
-M:	Eric Biggers <ebiggers@kernel.org>
-M:	Theodore Y. Ts'o <tytso@mit.edu>
-L:	linux-fscrypt@vger.kernel.org
-Q:	https://patchwork.kernel.org/project/linux-fscrypt/list/
-T:	git git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git fsverity
-S:	Supported
-F:	fs/verity/
-F:	include/linux/fsverity.h
-F:	include/uapi/linux/fsverity.h
-F:	Documentation/filesystems/fsverity.rst
 
 FUJITSU LAPTOP EXTRAS
 M:	Jonathan Woithe <jwoithe@just42.net>
