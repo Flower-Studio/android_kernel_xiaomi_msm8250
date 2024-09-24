@@ -3,6 +3,7 @@
  * Functions for working with the Flattened Device Tree data format
  *
  * Copyright 2009 Benjamin Herrenschmidt, IBM Corp
+ * Copyright (C) 2020 XiaoMi, Inc.
  * benh@kernel.crashing.org
  */
 
@@ -77,6 +78,32 @@ void of_fdt_limit_memory(int limit)
 					len);
 		}
 	}
+}
+
+/**
+ * of_fdt_get_ddrtype - Return the type of ddr (4/5) on the current device
+ *
+ * On match, returns a non-zero positive value which matches the ddr type.
+ * Otherwise returns -ENOENT.
+ */
+int of_fdt_get_ddrtype(void)
+{
+	int memory;
+	int len;
+	int ret;
+	fdt32_t *prop = NULL;
+
+	memory = fdt_path_offset(initial_boot_params, "/memory");
+	if (memory > 0)
+		prop = fdt_getprop_w(initial_boot_params, memory,
+				  "ddr_device_type", &len);
+
+	if (!prop || len != sizeof(u32))
+		return -ENOENT;
+
+	ret = fdt32_to_cpu(*prop);
+
+	return ret;
 }
 
 /**
@@ -891,6 +918,23 @@ const void * __init of_flat_dt_match_machine(const void *default_match,
 	return best_data;
 }
 
+void __init early_init_dt_check_for_powerup_reason(unsigned long node)
+{
+	unsigned long pu_reason;
+	int len;
+	const __be32 *prop;
+
+	pr_debug("Looking for powerup reason properties...\n");
+
+	prop = of_get_flat_dt_prop(node, "pureason", &len);
+	if (!prop)
+		return;
+	pu_reason = of_read_ulong(prop, len/4);
+	early_init_dt_setup_pureason_arch(pu_reason);
+
+	pr_debug("Powerup reason %d\n", (int)pu_reason);
+}
+
 #ifdef CONFIG_BLK_DEV_INITRD
 #ifndef __early_init_dt_declare_initrd
 static void __early_init_dt_declare_initrd(unsigned long start,
@@ -1135,6 +1179,7 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
 
 	pr_debug("Command line is: %s\n", (char*)data);
 
+	early_init_dt_check_for_powerup_reason(node);
 	/* break now */
 	return 1;
 }
