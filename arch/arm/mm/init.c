@@ -2,6 +2,7 @@
  *  linux/arch/arm/mm/init.c
  *
  *  Copyright (C) 1995-2005 Russell King
+ *  Copyright (C) 2020 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
