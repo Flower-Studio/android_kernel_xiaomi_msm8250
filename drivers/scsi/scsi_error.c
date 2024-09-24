@@ -1,5 +1,6 @@
 /*
  *  scsi_error.c Copyright (C) 1997 Eric Youngdale
+ *  Copyright (C) 2020 XiaoMi, Inc.
  *
  *  SCSI error/timeout handling
  *      Initial versions: Eric Youngdale.  Based upon conversations with
