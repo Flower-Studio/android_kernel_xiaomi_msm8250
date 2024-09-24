@@ -580,6 +580,19 @@ inline int bio_phys_segments(struct request_queue *q, struct bio *bio)
 }
 EXPORT_SYMBOL(bio_phys_segments);
 
+inline void bio_clone_crypt_key(struct bio *dst, const struct bio *src)
+{
+#ifdef CONFIG_PFK
+	dst->bi_iter.bi_dun = src->bi_iter.bi_dun;
+#ifdef CONFIG_DM_DEFAULT_KEY
+	dst->bi_crypt_key = src->bi_crypt_key;
+	dst->bi_crypt_skip = src->bi_crypt_skip;
+#endif
+	dst->bi_dio_inode = src->bi_dio_inode;
+#endif
+}
+EXPORT_SYMBOL(bio_clone_crypt_key);
+
 /**
  * 	__bio_clone_fast - clone a bio that shares the original bio's biovec
  * 	@bio: destination bio
@@ -609,7 +622,7 @@ void __bio_clone_fast(struct bio *bio, struct bio *bio_src)
 	bio->bi_write_hint = bio_src->bi_write_hint;
 	bio->bi_iter = bio_src->bi_iter;
 	bio->bi_io_vec = bio_src->bi_io_vec;
-
+	bio_clone_crypt_key(bio, bio_src);
 	bio_clone_blkcg_association(bio, bio_src);
 }
 EXPORT_SYMBOL(__bio_clone_fast);
@@ -803,9 +816,6 @@ void __bio_add_page(struct bio *bio, struct page *page,
 
 	bio->bi_iter.bi_size += len;
 	bio->bi_vcnt++;
-
-	if (!bio_flagged(bio, BIO_WORKINGSET) && unlikely(PageWorkingset(page)))
-		bio_set_flag(bio, BIO_WORKINGSET);
 }
 EXPORT_SYMBOL_GPL(__bio_add_page);
 
