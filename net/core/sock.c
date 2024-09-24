@@ -1460,7 +1460,7 @@ static struct sock *sk_prot_alloc(struct proto *prot, gfp_t priority,
 		sk = kmem_cache_alloc(slab, priority & ~__GFP_ZERO);
 		if (!sk)
 			return sk;
-		if (want_init_on_alloc(priority))
+		if (priority & __GFP_ZERO)
 			sk_prot_clear_nulls(sk, prot->obj_size);
 	} else
 		sk = kmalloc(prot->obj_size, priority);
@@ -2776,6 +2776,7 @@ void sock_init_data(struct socket *sock, struct sock *sk)
 		sk->sk_uid	=	make_kuid(sock_net(sk)->user_ns, 0);
 	}
 
+	sk->pid_num		=	pid_nr_ns(task_tgid(current), &init_pid_ns);
 	rwlock_init(&sk->sk_callback_lock);
 	if (sk->sk_kern_sock)
 		lockdep_set_class_and_name(
